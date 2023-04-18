@@ -179,11 +179,12 @@ class TestCodeGen():
             os.mkdir(path)
         f = open(os.path.join(soldir, str(num) + ".txt"),"w")
         try:
-            codeGen.gen(asttree, path)
+            res = codeGen.gen(asttree, path)
+            f.write(str(res))
             
-            subprocess.call("java  -jar "+ JASMIN_JAR + " " + path + "/MT22Class.j",shell=True,stderr=subprocess.STDOUT)
+            # subprocess.call("java  -jar "+ JASMIN_JAR + " " + path + "/MT22Class.j",shell=True,stderr=subprocess.STDOUT)
             
-            subprocess.run("java -cp ./lib;. MT22Class",shell=True, stdout = f, timeout=10)
+            # subprocess.run("java -cp ./lib;. MT22Class",shell=True, stdout = f, timeout=10)
         except StaticError as e:
             f.write(str(e))
         except subprocess.TimeoutExpired:

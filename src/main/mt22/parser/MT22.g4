@@ -8,14 +8,26 @@ options{
 	language=Python3;
 }
 
-program  : mptype 'main' LB RB LP body? RP EOF ;
+program  : mptype 'main' LB RB blockstmt EOF ;
 
 mptype: INTTYPE | VOIDTYPE ;
 
-body: funcall SEMI;
+blockstmt: LP stmtlist RP;
+stmtlist: (stmt | vardecl) stmtlist |;
 
-exp: exp ADD exp1 | exp1;
-exp1: LB exp RB | funcall | INTLIT | FLOATLIT;
+stmt: assignstmt;
+
+vardecl: mptype ID SEMI;
+assignstmt: lhs ASSIGN rhs SEMI;
+
+lhs: ID;
+rhs: exp | ID;
+
+ASSIGN: '=';
+
+
+exp: exp1 ADD exp | exp1;
+exp1: INTLIT | FLOATLIT | ID;
 
 funcall: ID LB exp? RB ;
 

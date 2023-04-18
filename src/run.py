@@ -6,16 +6,17 @@ import subprocess
 import unittest
 from antlr4 import *
 
-# ANTLR_JAR = os.environ.get('ANTLR_JAR')
+ANTLR_JAR = os.environ.get('ANTLR_JAR')
 ANTLR_JAR = './main/mt22/utils/antlr-4.9.2-complete.jar'
 TARGET_DIR = '../target'
-GENERATE_DIR = 'main/mt22/parser'
+GENERATE_DIR = './main/mt22/parser'
 
 def main(argv):
     if len(argv) < 1:
         printUsage()
     elif argv[0] == 'gen':
         subprocess.run(["java","-jar",ANTLR_JAR,"-o","../target","-no-listener","-visitor","main/mt22/parser/MT22.g4"])
+        subprocess.run(["java","-jar",ANTLR_JAR,"-o",GENERATE_DIR,"-no-listener","-visitor","main/mt22/parser/MT22.g4"])
     elif argv[0] == 'clean':
         subprocess.run(["rm","-rf",TARGET_DIR + "/*"])
                

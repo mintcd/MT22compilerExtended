@@ -1,1 +1,15 @@
-void main() {putInt(2+9+1);}
+int main () {
+            int a;
+            int b;
+            int c;
+            int d;
+            int e;
+            int f;
+            int g;
+            
+            e = d + a;
+            f = b + c;
+            f = f + b;
+            d = e + f;
+            g = d;
+        }

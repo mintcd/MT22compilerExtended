@@ -1,1 +1,24 @@
-12
+addi $sp, $sp, -4 
+addi $sp, $sp, -4 
+addi $sp, $sp, -4 
+addi $sp, $sp, -4 
+addi $sp, $sp, -4 
+addi $sp, $sp, -4 
+addi $sp, $sp, -4 
+lw $1 12($sp)
+lw $1 28($sp)
+lw $4 16($sp)
+add $2, $5, $5
+addi $5, $2, 0 
+lw $3 8($sp)
+lw $3 20($sp)
+lw $2 24($sp)
+add $5, $5, $5
+addi $5, $5, 0 
+lw $3 8($sp)
+add $5, $2, $3
+addi $5, $5, 0 
+lw $1 12($sp)
+add $2, $3, $5
+addi $4, $2, 0 
+addi $2, $4, 0 

@@ -8,11 +8,20 @@ from main.mt22.codegen.CodeGenError import IllegalOperandException
 
 
 class Emitter():
-    def __init__(self, filename):
-        self.filename = filename
-        self.buff = list()
-        self.jvm = JasminCode()
+    def __init__(self, sp = 0):
+        # Emitter needs to know the value of $sp
+        self.sp = 0
+    
+    def emitEXPANDSTACK(self, vol : int):
+        self.sp = self.sp - vol
+        return f"addi $sp, $sp, -{vol} \n"
 
+    def emitLOADWORD(self, number : int, storage : int):
+        return f"lw ${number} {storage - self.sp}($sp)\n"
+    
+    def emitSTOREWORD(self, number, storage):
+        return f"sw ${number} {storage - self.sp}($sp)\n"
+    
     def getJVMType(self, inType):
         typeIn = type(inType)
         if typeIn is IntegerType:

@@ -4,55 +4,53 @@ from AST import *
 
 
 class ASTGeneration(MT22Visitor):
-    # program  : mptype 'main' LB RB LP body? RP EOF ;
+    # program  : mptype 'main' LB RB blockstmt EOF ;
     def visitProgram(self, ctx: MT22Parser.ProgramContext):
-        return Program([FuncDecl("main",
-			self.visit(ctx.mptype()),
-                        [],
-                        None,
-                        BlockStmt([self.visit(ctx.body())] if ctx.body() else []))])
+        return Program([FuncDecl('main', IntegerType(), [], None, self.visit(ctx.blockstmt()))])
 
+    # blockstmt: LP stmtlist RP;
+    def visitBlockstmt(self, ctx: MT22Parser.BlockstmtContext):
+        return BlockStmt(self.visit(ctx.stmtlist()))
+
+    # Visit a parse tree produced by MT22Parser#stmtlist.
+    def visitStmtlist(self, ctx: MT22Parser.StmtlistContext):
+        if ctx.stmtlist():
+            if ctx.stmt():
+                return [self.visit(ctx.stmt())] + self.visit(ctx.stmtlist())
+            return [self.visit(ctx.vardecl())] + self.visit(ctx.stmtlist())
+        return []
+
+
+    # stmt: assignstmt;
+    def visitStmt(self, ctx:MT22Parser.StmtContext):
+        if ctx.assignstmt(): 
+            return self.visit(ctx.assignstmt())
+
+    # assignstmt: lhs EQUAL rhs SEMI;
+    def visitAssignstmt(self, ctx: MT22Parser.AssignstmtContext):
+        return AssignStmt(self.visit(ctx.lhs()), self.visit(ctx.rhs()))
+
+    # vardecl: mptype ID SEMI;
+    def visitVardecl(self, ctx:MT22Parser.VardeclContext):
+        return VarDecl(Id(ctx.ID().getText()), self.visit(ctx.mptype()))
+    
+    # lhs: ID;
+    def visitLhs(self, ctx:MT22Parser.LhsContext):
+        if ctx.ID(): return Id(ctx.ID().getText())
 
     # mptype: INTTYPE | VOIDTYPE ;
-    def visitMptype(self, ctx:MT22Parser.MptypeContext):
-        if ctx.INTTYPE():
-            return IntegerType()
-        else:
-            return VoidType()
-
-
-    # body: funcall SEMI;
-    def visitBody(self, ctx:MT22Parser.BodyContext):
-        return self.visit(ctx.funcall())
-
+    def visitMptype(self, ctx: MT22Parser.MptypeContext):
+        if ctx.INTTYPE(): return IntegerType()
+        if ctx.VOIDTYPE(): return VoidType()
 
     # exp: exp ADD exp1 | exp1;
     def visitExp(self, ctx:MT22Parser.ExpContext):
-        if ctx.getChildCount() == 1:
-            return self.visit(ctx.exp1())
-        else:
+        if ctx.exp(): 
             return BinExpr(ctx.ADD().getText(), self.visit(ctx.exp()), self.visit(ctx.exp1()))
+        return self.visit(ctx.exp1())
 
-
-    # exp1: LB exp RB | funcall | INTLIT | FLOATLIT;
+    # Visit a parse tree produced by MT22Parser#exp1.
     def visitExp1(self, ctx:MT22Parser.Exp1Context):
-        if ctx.getChildCount() == 3:
-            return self.visit(ctx.exp())
-        elif ctx.INTLIT():
-            return IntegerLit(int(ctx.INTLIT().getText()))
-        elif ctx.FLOATLIT():
-            floatlit = ctx.FLOATLIT().getText()
-            if floatlit[0] == '.':
-                floatlit = '0' + floatlit
-            return FloatLit(float(floatlit))
-        else:
-            return self.visit(ctx.funcall())
-
-
-
-    # funcall: ID LB exp? RB ;
-    def visitFuncall(self, ctx:MT22Parser.FuncallContext):
-        if ctx.getChildCount() == 3:
-            return FuncCall(ctx.ID().getText(), [])
-        else:
-            return FuncCall(ctx.ID().getText(), [self.visit(ctx.exp())])
+        if ctx.ID(): return Id(ctx.ID().getText())
+        elif ctx.FLOATLIT(): return FloatLit(float(ctx.FLOATLIT().getText()))
+        elif ctx.INTLIT(): return IntegerLit(int(ctx.INTLIT().getText()))

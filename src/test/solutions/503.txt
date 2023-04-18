@@ -1,1 +1,3 @@
-11.1
+Program([
+	FuncDecl(main, VoidType, [], None, BlockStmt([FuncCall(putFloat, [BinExpr(+, IntegerLit(2), FloatLit(9.1))])]))
+])
