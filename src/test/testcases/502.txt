@@ -6,7 +6,7 @@ int main () {
             int e;
             int f;
             int g;
-            
+                    
             e = d + a;
             f = b + c;
             f = f + b;

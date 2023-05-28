@@ -8,4 +8,9 @@ Usages
     5) python run.py test CheckSuite
     6) python run.py test CodeGenSuite
 
+Note:
+    It is my inability to implement after specifications.
+    This is a draft. I am completing the code and submit whenever possible.
+    Maybe it will be late some more hours or the whole day.
+
 
